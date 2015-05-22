@@ -88,12 +88,17 @@ class FileDBUpdate extends FileDBConditionQuery implements FileDBQueryInterface 
     $update = $this->getFields();
 
     $lock = FileDBA::lockTable($table->getTableName());
+    try {
+      foreach ($rows as $id => $row) {
+        $row = array_combine($fields, array_values($row));
+        $updated = array_merge($row, $update);
 
-    foreach ($rows as $id => $row) {
-      $row = array_combine($fields, array_values($row));
-      $updated = array_merge($row, $update);
-
-      $table->setRow($updated, $id);
+        $table->setRow($updated, $id);
+      }
+    }
+    catch (Exception $e) {
+      FileDBA::unlockTable($table->getTableName(), $lock);
+      throw new Exception($e->getMessage());
     }
 
     FileDBA::unlockTable($table->getTableName(), $lock);

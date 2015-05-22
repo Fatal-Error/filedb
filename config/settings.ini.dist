@@ -2,10 +2,11 @@
 ; Comments start with ';', as in php.ini
 
 [db]
-	folder = '/Users/adrianocori/Projects/workspace/filedb/db'
+	folder = '/Path/to/your/database/directory'
 
 ; select compression mode and level.
 ; If you don't want to compress your files set 'false' as your compression type
+; otherwise set 'gzip' as type and a compression level between 1 and 10.
 [compression]
 	type = gzip
 	level = 9

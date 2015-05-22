@@ -72,16 +72,16 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
   public function getTables() {
     return $this->tables;
   }
-  
+
   /**
    * @return \FileDBSelect
    */
   public function distinct() {
     $this->distinct = TRUE;
-    
+
     return $this;
   }
-  
+
   /**
    * @return boolean
    */
@@ -97,11 +97,11 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
    */
   public function fields($alias, array $fields = array()) {
     $table = $this->getTable($alias);
-    
+
     if (empty($fields)) {
       $fields = $table->getFields()->getNames();
     }
-    
+
     if (count(array_intersect($table->getFields()->getNames(), $fields)) == count($fields)) {
       foreach ($fields as $field) {
         $this->fields[] = $alias . '.' . $field;
@@ -120,7 +120,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
   public function getFields() {
     return $this->fields;
   }
-  
+
   /**
    * @param string $field
    * @param mixed $value
@@ -130,24 +130,24 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
    */
   public function condition($field, $value, $conditionType = FIleDBConditionTypes::EQUALS, $group = 0) {
     list($alias, $fieldName) = explode('.', $field);
-    
+
     $table = $this->getTable($alias);
     if(!$table->getFields()->getField($fieldName)) {
       throw new \Exception(sprintf('Unable to set a condition for field "%s" of table "%s".', $field, $table->getTableName()));
     }
-    
+
     $condition = FileDBConditionFactory::getCondition($field, $value, $conditionType);
-    
+
     if ($alias == $this->getBase()) {
       $this->addCondition($condition, $group);
     }
     else {
       $this->getJoin($alias)->addCondition($condition, $group, $this->getConditionMethod());
     }
-    
+
     return $this;
   }
-  
+
   /**
    * @param FileDBJoin $join
    */
@@ -192,7 +192,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
         throw new \Exception(sprintf('Alias table "%s" for Left Join is already in use.', $leftAlias));
       }
     } catch (Exception $exc) { ; }
-    
+
     $this->addJoin(new FileDBLeftJoin($leftTable, $leftAlias, $leftField, $rightTable, $rightAlias, $rightField));
     $this->addTable($leftTable, $leftAlias);
 
@@ -205,7 +205,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
   public function getJoins() {
     return !empty($this->joins) ? $this->joins : array();
   }
-  
+
   /**
    * @param string $alias
    * @return \FileDBJoin
@@ -270,7 +270,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
     $rows = $this->getTable($this->getBase())->getRows();
     $this->setFieldAlias($this->getBase(), $rows);
     $this->rows = $rows;
-    
+
     /* CONDITIONS */
     foreach($this->getConditions() as $group) {
       foreach ($group as $conditionMethod => $conditions) {
@@ -311,16 +311,16 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
       $this->rows = $join->doJoin($this->rows, $this->getFields());
     }
     /* END JOINS */
-    
+
     /* FIELDS */
     $selectedFields = $this->getFields();
     $fields = array_combine(array_values($selectedFields), array_values($selectedFields));
-    
+
     foreach ($this->rows as $id => $row) {
       $this->rows[$id] = array_intersect_key($row, $fields);
     }
     /* END FIELDS */
-    
+
     /* ORDER BY */
     foreach ($this->getOrder() as $order) {
       $grouped_rows = $this->fetchAllGrouped();
@@ -329,30 +329,39 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
       }
     }
     /* END ORDER BY */
-    
+
     /* LIMIT */
     $limit = $this->getLimit();
     if ($limit) {
       $this->rows = array_slice($this->rows, $limit['offset'], $limit['limit']);
     }
     /* END LIMIT */
-    
+
     /* DISTINCT */
     if ($this->isDistinct()) {
       $this->rows = array_intersect_key($this->rows, array_unique(array_map('serialize', $this->rows)));
     }
     /* END DISTINCT */
-    
+
     return $this;
   }
-  
+
   /**
    * @return mixed
    */
   public function fetch(){
-    return !empty($this->rows) ? array_shift($this->rows) : FALSE;
+    $unaliased = array();
+    $rows = !empty($this->rows) ? array_shift($this->rows) : $unaliased;
+
+    foreach($rows as $field => $value) {
+      $data = explode('.', $field);
+      unset($data[0]);
+      $unaliased[implode('.', $data)] = $value;
+    }
+
+    return $unaliased;
   }
-  
+
   /**
    * @param boolean $index Default: FALSE. Set it to TRUE to get results keyed by index
    * @return mixed An array containing rows extracted.
@@ -362,7 +371,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
     if (empty($this->rows)) {
       return FALSE;
     }
-    
+
     if (!$aliased) {
       foreach ($this->rows as $i => $row) {
         $unaliased = array();
@@ -379,7 +388,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
 
     return $index ? $this->rows : array_values($this->rows);
   }
-  
+
   public function fetchAllGrouped() {
     if (empty($this->rows)) {
       return FALSE;
@@ -396,7 +405,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
 
     return $grouped_rows;
   }
-  
+
   /**
    * @return int
    */
@@ -410,7 +419,7 @@ class FileDBSelect extends FileDBConditionQuery implements FileDBQueryInterface,
    */
   private function setFieldAlias($alias, &$rows) {
     $aliased = array();
-    
+
     foreach ($rows as $id => $row) {
       foreach ($row as $field => $value) {
         $aliased[$id][$alias . '.' . $field] = $value;

@@ -3,6 +3,7 @@
 
 [db]
 	folder = '/Path/to/your/database/directory'
+	schema = '/Path/to/your/database/schema'
 
 ; select compression mode and level.
 ; If you don't want to compress your files set 'false' as your compression type

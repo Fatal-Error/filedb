@@ -64,7 +64,7 @@ class FileDBSector extends FileDBFile {
 
       if ($existing_index === FALSE || $existing_index === $id) {
         if ($id === FALSE) {
-          global $settings;
+          $settings = FileDB::getSettings();
           $rows_keys = array_keys($sector_rows);
           $id = !empty($sector_rows) ? end($rows_keys) + 1 : $this->getIndex() * $settings['sectors']['max_rows'];
         }

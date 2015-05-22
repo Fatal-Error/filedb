@@ -15,7 +15,7 @@ class FileDBHandler {
         throw new \Exception(sprintf('Cannot read from file "%s". It doesn\'t exists.', $filepath));
       }
 
-      global $settings;
+      $settings = FileDB::getSettings();
 
       switch ($settings['compression']['type']) {
         case 'gzip':
@@ -60,7 +60,7 @@ class FileDBHandler {
       throw new \Exception(sprintf('Cannot write into file "%s". It doesn\'t exists.', $filename));
     }
 
-    global $settings;
+    $settings = FileDB::getSettings();
     $data = serialize($data);
 
     if ($settings['compression']['type'] == 'gzip') {
@@ -102,7 +102,7 @@ class FileDBHandler {
     $folder = & self::_static(__FUNCTION__);
 
     if (empty($folder)) {
-      global $settings;
+      $settings = FileDB::getSettings();
       $folder = $settings['db']['folder'];
     }
 

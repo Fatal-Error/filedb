@@ -75,8 +75,12 @@ class FileDBUpdate extends FileDBConditionQuery implements FileDBQueryInterface 
     $query = FileDB::select($table->getTableName(), $this->getAlias())
       ->fields($this->getAlias());
 
-    foreach ($this->getConditions() as $condition) {
-      $query->addCondition($condition);
+    foreach($this->getConditions() as $group) {
+      foreach ($group as $conditions) {
+        foreach ($conditions as $condition) {
+          $query->addCondition($condition);
+        }
+      }
     }
 
     $rows = $query->execute()->fetchAll(TRUE);

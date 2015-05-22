@@ -7,7 +7,7 @@ abstract class FileDBFile {
   abstract protected function getFilename();
 
   protected function write(){
-    global $settings;
+    $settings = FileDB::getSettings();
     $dir = $settings['db']['folder'];
     $filename = $dir . '/' . $this->getFilename();
 

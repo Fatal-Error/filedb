@@ -10,8 +10,9 @@ class FileDBA {
     $tables = FileDBHandler::scanDir($dir, '/\.' . FileDBTable::EXTENSION . '$/');
 
     if (!empty($tables)) {
-      foreach ($tables as $i => $table) {
-        $tables[$i] = reset(explode('.', $table));
+      foreach ($tables as $i => $tablename) {
+        $table = explode('.', $tablename);
+        $tables[$i] = reset($table);
       }
     }
 

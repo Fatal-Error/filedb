@@ -3,7 +3,8 @@
 class schemaCommand extends FileDBCommand {
 
   public function createfromfile() {
-    $schema_file = __DIR__ . "/../../config/schema.json";
+    $settings = FileDB::getSettings();
+    $schema_file = $settings['db']['schema'] . "/schema.json";
 
     if (file_exists($schema_file) && ($schema = json_decode(file_get_contents($schema_file)))) {
 

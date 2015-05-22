@@ -236,7 +236,7 @@ class FileDBTable extends FileDBFile {
   }
 
   private function getCorrectSector($id = FALSE) {
-    global $settings;
+    $settings = FileDB::getSettings();
 
     $rows = $this->getRows();
     $db_folder = $settings['db']['folder'];

@@ -66,4 +66,7 @@ class FileDB {
     return FileDBHandler::readFile($filename);
   }
 
+  public static function getSettings() {
+    return $GLOBALS['filedb_settings'];
+  }
 }

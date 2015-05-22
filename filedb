@@ -1,0 +1,73 @@
+#!/usr/bin/php
+<?php
+$FILEDB_HOME = __DIR__;
+$COMMANDS_DIR = $FILEDB_HOME . '/lib/commands';
+
+require_once $FILEDB_HOME . '/filedb.inc';
+require_once $FILEDB_HOME . '/lib/dds/FileDBA.php';
+require_once $FILEDB_HOME . '/lib/commons/ArrayToTextTable.php';
+require_once $COMMANDS_DIR . '/FileDBCommand.php';
+
+foreach (FileDBHandler::scanDir($COMMANDS_DIR, '/Command\.php$/', '/(\.\.?|CVS|FileDBCommand\.php)$/') as $class_name) {
+  require_once $COMMANDS_DIR . '/' . $class_name;
+}
+
+set_time_limit(0);
+
+if (empty($argv[1]) || $argv[1] == '--help') {
+  print "\33[1;33m                                                    
+ _____  _      _____  ____  
+|  ___|| |    |  __ \|  _ \ 
+| |__ _| | ___| |  | | |_) |
+|  __| | |/ _ \ |  | |  _ < 
+| |  | | |  __/ |__| | |_) |
+|_|  |_|_|\___|_____/|____/ 
+                                                                   
+Copyright (c) " . date("Y") . " Adriano Cori\n\n";
+
+  foreach (get_declared_classes() as $class) {
+    $rClass = new ReflectionClass($class);
+    $parent = $rClass->getParentClass();
+
+    if (!empty($parent) && $parent->getName() == 'FileDBCommand') {
+      $commandCLass = new ReflectionClass($class);
+      print "\33[1;32m[$class]:" . PHP_EOL;
+
+      foreach ($commandCLass->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        if ($method->name != '__construct') {
+          $arguments = array();
+          preg_match_all("/\@FDB\\\\(optional|required) \w*? ?(.*?\w+) ?(.*)/", $method->getDocComment(), $matches);
+
+          foreach ($matches[1] as $i => $match) {
+            $color = ($match == 'required') ? "\33[1;31m" : "\33[1;36m";
+            $arguments[$i] = $color . $matches[2][$i];
+            if (!empty($matches[3][$i])) {
+              $arguments[$i].= " \33[1;37m" . $matches[3][$i];
+            }
+          }
+
+          $command = preg_replace("/Command$/", '', $method->class) . ':' . $method->name;
+          $tabs = strlen($command) > 12 ? "\t" : "\t\t";
+
+          print "\33[0;32m- " . $command . $tabs . implode(', ', $arguments) . PHP_EOL;
+        }
+      }
+
+      print PHP_EOL;
+    }
+  }
+}
+else {
+  list($class, $method) = explode(':', $argv[1]);
+  $CommandClass = $class . 'Command';
+  $args = array_slice($argv, 2);
+
+  if (class_exists($CommandClass)) {
+    $command = new $CommandClass($args);
+    return $command->{$method}();
+  }
+  else {
+    print 'Undefined command ' . $argv[1] . PHP_EOL;
+    return;
+  }
+}

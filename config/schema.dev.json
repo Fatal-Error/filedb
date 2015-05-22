@@ -1,0 +1,195 @@
+[
+    {
+        "table": "users_teams",
+        "fields": [
+            {
+                "name": "id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": true,
+                "nullable": false,
+                "primaryKey": true
+            },
+            {
+                "name": "fbuser_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "team_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            }
+        ]
+    },
+    {
+        "table": "match",
+        "fields": [
+            {
+                "name": "id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": true,
+                "nullable": false,
+                "primaryKey": true
+            },
+            {
+                "name": "home_team_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "away_team_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "where",
+                "type": "string",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": true,
+                "primaryKey": false
+            },
+            {
+                "name": "when",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": true,
+                "primaryKey": false
+            }
+        ]
+    },
+    {
+        "table": "match_availability",
+        "fields": [
+            {
+                "name": "id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": true,
+                "nullable": false,
+                "primaryKey": true
+            },
+            {
+                "name": "match_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "fbuser_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "is_available",
+                "type": "boolean",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": true,
+                "primaryKey": false
+            }
+        ]
+    },
+    {
+        "table": "match_info",
+        "fields": [
+            {
+                "name": "id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": true,
+                "nullable": false,
+                "primaryKey": true
+            },
+            {
+                "name": "match_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "fbuser_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "type",
+                "type": "string",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "time",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": true,
+                "primaryKey": false
+            }
+        ]
+    },
+    {
+        "table": "votes",
+        "fields": [
+            {
+                "name": "id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": true,
+                "nullable": false,
+                "primaryKey": true
+            },
+            {
+                "name": "fbuser_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "match_id",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": false,
+                "primaryKey": false
+            },
+            {
+                "name": "vote",
+                "type": "integer",
+                "maxLength": false,
+                "autoincrement": false,
+                "nullable": true,
+                "primaryKey": false
+            }
+        ]
+    }
+]

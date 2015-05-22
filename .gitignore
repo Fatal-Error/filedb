@@ -1,0 +1,10 @@
+db
+.settings
+.buildpath
+.project
+.DS_Store
+.idea
+index.php~
+config/settings.ini
+config/schema.json
+tmp

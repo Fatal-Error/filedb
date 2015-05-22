@@ -1,0 +1,14 @@
+{
+    "name": "adrianocori/filedb",
+    "description": "Php Object Persister. A Database on files.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adriano Cori",
+            "email": "cori.adriano@gmail.com"
+        }
+    ],
+    "require": {
+	"php": ">=5.3.0"
+    }
+}
